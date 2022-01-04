@@ -9,6 +9,7 @@ import org.apache.commons.net.ntp.TimeInfo;
 
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
@@ -34,9 +35,17 @@ public class NTP extends AsyncTask<String, Integer, Long> {
     @Override
     protected Long doInBackground(String ...args) {
         long timeMills;
+        Log.println(Log.INFO, "TSAuto NTP doInBackground", "open...");
         NTPUDPClient timeClient = new NTPUDPClient();
         try {
-            Log.println(Log.INFO, "NTP doInBackground", "start...");
+            timeClient.open();
+            timeClient.setSoTimeout(2000);
+        } catch (SocketException e) {
+            e.printStackTrace();
+            Log.println(Log.INFO, "TSAuto NTP doInBackground", "SocketException");
+        }
+        Log.println(Log.INFO, "TSAuto NTP doInBackground", "start...");
+        try {
             InetAddress inetAddress = InetAddress.getByName(TIME_SERVER);
             TimeInfo timeInfo = timeClient.getTime(inetAddress);
             timeMills = timeInfo.getMessage().getTransmitTimeStamp().getTime();
@@ -48,7 +57,7 @@ public class NTP extends AsyncTask<String, Integer, Long> {
             timeMills = -3L;
         }
         timeClient.close();
-        Log.println(Log.INFO, "NTP doInBackground", "done.");
+        Log.println(Log.INFO, "TSAuto NTP doInBackground", "done.");
         return timeMills;
     }
 
@@ -58,7 +67,7 @@ public class NTP extends AsyncTask<String, Integer, Long> {
         if (is_foreground){
             text_view.setText("try get time...");
         }
-        Log.println(Log.INFO, "NTP onPreExecute", "try get time...");
+        Log.println(Log.INFO, "TSAuto NTP onPreExecute", "try get time...");
     }
 
     @Override
@@ -67,7 +76,7 @@ public class NTP extends AsyncTask<String, Integer, Long> {
             text_view.setText("task cancelled, try again");
         }
         super.onCancelled();
-        Log.println(Log.INFO, "NTP onCancelled", "cancel");
+        Log.println(Log.INFO, "TSAuto NTP onCancelled", "cancel");
     }
 
     @Override
@@ -98,7 +107,7 @@ public class NTP extends AsyncTask<String, Integer, Long> {
             result = timeMills.toString();
             ntpStoreNtpTime.set(timeMills);
         }
-        Log.println(Log.INFO, "NTP onPostExecute", result);
+        Log.println(Log.INFO, "TSAuto NTP onPostExecute", result);
     }
 }
 

@@ -19,4 +19,11 @@ public class ServiceRun extends Service {
         new MyTime();
         return super.onStartCommand(intent, flags, startId);
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Intent it = new Intent(ServiceRun.this, ServiceRun.class);
+        getApplication().startService(it); // If service will destroy, Start the service again
+    }
 }

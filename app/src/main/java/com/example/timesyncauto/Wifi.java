@@ -21,13 +21,13 @@ public class Wifi {
                 os.flush();
                 os.writeBytes("svc wifi enable\n");
                 os.flush();
-                Log.println(Log.DEBUG, "refresh_wifi", "success");
+                Log.println(Log.INFO, "TSAuto Wifi refresh_wifi", "success");
             } else {
-                Log.println(Log.DEBUG, "refresh_wifi", "is disabled");
+                Log.println(Log.INFO, "TSAuto Wifi refresh_wifi", "is disabled");
             }
         } catch (IOException e) {
             e.printStackTrace();
-            Log.println(Log.DEBUG, "refresh_wifi", "IOException");
+            Log.println(Log.INFO, "TSAuto Wifi refresh_wifi", "IOException");
         }
     }
 }

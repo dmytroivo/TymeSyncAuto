@@ -36,12 +36,12 @@ public class MyTime {
     public MyTime(){
         Integer period = 1000*60*5; // 5 min.
         Timer timer = new Timer();
-
+        Log.println(Log.INFO, "TSAuto MyTime Service", "START");
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
                 if (switch_value == true) {
-                    Log.println(Log.INFO, "Timer.schedule", "update_ntp_time");
+                    Log.println(Log.INFO, "TSAuto MyTime Service Timer.schedule", "update_ntp_time");
                     update_ntp_time();
                 }
             }
@@ -51,7 +51,7 @@ public class MyTime {
             @Override
             public void run() {
                 if (switch_value == true) {
-                    Log.println(Log.INFO, "Timer.schedule", "set_device_time");
+                    Log.println(Log.INFO, "TSAuto MyTime Service Timer.schedule", "set_device_time");
                     set_device_time();
                 }
             }
@@ -134,10 +134,10 @@ public class MyTime {
         long timeDeviceMills = get_device_time();
         String strDate = "";
         String text_result = "check internet";
-        Log.println(Log.DEBUG, "process_set_time", "start");
+        Log.println(Log.INFO, "TSAuto MyTime process_set_time", "start");
         if (timeMills > 0) {
             if (timeMills != storeNtpTime.defaultTimeMills) {
-                if (Math.abs(timeDeviceMills - timeMills) > 1000 * 60 * 5) {
+                if (Math.abs(timeDeviceMills - timeMills) > 1000 * 60 * 2) {
                     try {
                         strDate = new SimpleDateFormat("MMddHHmmyyyy.ss", Locale.UK).format(timeMills);
                         ProcessBuilder pb = new ProcessBuilder("sh", "-c", "su");
@@ -160,7 +160,7 @@ public class MyTime {
                     text_result = "sync no need";
                 }
             }
-            Log.println(Log.DEBUG, "process_set_time", "done: " + text_result);
+            Log.println(Log.INFO, "TSAuto MyTime process_set_time", "done: " + text_result);
         } else {
             text_result = "error";
         }
