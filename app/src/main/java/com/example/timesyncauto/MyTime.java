@@ -28,8 +28,7 @@ public class MyTime {
     Boolean switch_value = true;
     NTP ntp_background;
     NTP ntp_foreground;
-    private static int count_update = 0;
-    private static int count_set = 0;
+    private static int count_repeat = 0;
 
     protected String time2str(long timeInMillis) {
         return new SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.UK).format(timeInMillis);
@@ -37,7 +36,7 @@ public class MyTime {
 
     public MyTime(){
 
-        Integer period = 1000*5; // 5 min.
+        Integer period = 1000*6; // 6 sec.
         Timer timer = new Timer();
         Log.println(Log.INFO, "TSAuto MyTime Timer.schedule", "START");
         timer.schedule(new TimerTask() {
@@ -46,12 +45,12 @@ public class MyTime {
                 if (switch_value == true) {
                     Log.println(Log.INFO, "TSAuto MyTime Timer.schedule", "RUN update_ntp_time");
                     update_ntp_time();
-                    count_update++;
-                    if (count_update >= 5) {
+                    count_repeat++;
+                    if (count_repeat >= 5) {
                         timer.cancel();
                         timer.purge();
                         Log.println(Log.INFO, "TSAuto MyTime Timer.schedule", "STOP update_ntp_time");
-                        count_update = 0;
+                        count_repeat = 0;
                         return;
                     }
                 }
@@ -65,16 +64,8 @@ public class MyTime {
                     Log.println(Log.INFO, "TSAuto MyTime Timer.schedule", "RUN set_device_time");
                     set_device_time();
                 }
-                count_set++;
-                if (count_set >= 5) {
-                    timer.cancel();
-                    timer.purge();
-                    count_set = 0;
-                    Log.println(Log.INFO, "TSAuto MyTime Timer.schedule", "STOP set_device_time");
-                    return;
-                }
             }
-        }, 2000, period);
+        }, 1000*2, period);
 
     }
 

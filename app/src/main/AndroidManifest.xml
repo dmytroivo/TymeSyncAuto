@@ -32,10 +32,12 @@
             </intent-filter>
         </activity>
         <service android:name=".ServiceRun"/>
-        <receiver android:name=".MyBroadcastReceiver"  android:exported="true">
+        <receiver android:name=".MyBroadcastReceiver" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
-                <action android:name="android.intent.action.INPUT_METHOD_CHANGED" />
+                <action android:name="android.intent.action.ACTION_MAIN"/>
+                <action android:name="android.intent.action.USER_PRESENT"/>
+                <action android:name="android.intent.action.ACTION_SCREEN_ON" />
             </intent-filter>
         </receiver>
     </application>
