@@ -28,21 +28,32 @@ public class MyTime {
     Boolean switch_value = true;
     NTP ntp_background;
     NTP ntp_foreground;
+    private static int count_update = 0;
+    private static int count_set = 0;
 
     protected String time2str(long timeInMillis) {
         return new SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.UK).format(timeInMillis);
     }
 
     public MyTime(){
-        Integer period = 1000*60*5; // 5 min.
+
+        Integer period = 1000*5; // 5 min.
         Timer timer = new Timer();
-        Log.println(Log.INFO, "TSAuto MyTime Service", "START");
+        Log.println(Log.INFO, "TSAuto MyTime Timer.schedule", "START");
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
                 if (switch_value == true) {
-                    Log.println(Log.INFO, "TSAuto MyTime Service Timer.schedule", "update_ntp_time");
+                    Log.println(Log.INFO, "TSAuto MyTime Timer.schedule", "RUN update_ntp_time");
                     update_ntp_time();
+                    count_update++;
+                    if (count_update >= 5) {
+                        timer.cancel();
+                        timer.purge();
+                        Log.println(Log.INFO, "TSAuto MyTime Timer.schedule", "STOP update_ntp_time");
+                        count_update = 0;
+                        return;
+                    }
                 }
             }
         }, 0, period);
@@ -51,11 +62,20 @@ public class MyTime {
             @Override
             public void run() {
                 if (switch_value == true) {
-                    Log.println(Log.INFO, "TSAuto MyTime Service Timer.schedule", "set_device_time");
+                    Log.println(Log.INFO, "TSAuto MyTime Timer.schedule", "RUN set_device_time");
                     set_device_time();
+                }
+                count_set++;
+                if (count_set >= 5) {
+                    timer.cancel();
+                    timer.purge();
+                    count_set = 0;
+                    Log.println(Log.INFO, "TSAuto MyTime Timer.schedule", "STOP set_device_time");
+                    return;
                 }
             }
         }, 2000, period);
+
     }
 
     public MyTime(TextView timeNtpV, TextView timeDeviceV,

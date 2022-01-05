@@ -3,6 +3,7 @@ package com.example.timesyncauto;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 
@@ -17,13 +18,7 @@ public class ServiceRun extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         new MyTime();
+        Log.println(Log.INFO, "TSAuto ServiceRun", "START");
         return super.onStartCommand(intent, flags, startId);
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        Intent it = new Intent(ServiceRun.this, ServiceRun.class);
-        getApplication().startService(it); // If service will destroy, Start the service again
     }
 }
